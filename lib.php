@@ -5,6 +5,7 @@
 
   ORM::configure('mysql:host=localhost;dbname=winestore');
   ORM::configure('username', 'root');
+  ORM::configure('password', 'RMIT2010');
 
   class Wine extends Model {
      public static $_table = 'wine';

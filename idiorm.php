@@ -127,6 +127,9 @@
         // GROUP BY
         protected $_group_by = array();
 
+        // HAVING
+        protected $_having = array();
+
         // The data for a hydrated instance of the class
         protected $_data = array();
 
@@ -371,7 +374,7 @@
         /**
          * Tell the ORM that you are expecting multiple results
          * from your query, and execute it. Will return an array
-         * of instances of the ORM class, or an empty array if
+         u of instances of the ORM class, or an empty array if
          * no rows were returned.
          */
         public function find_many() {
@@ -776,6 +779,7 @@
                 $this->_build_join(),
                 $this->_build_where(),
                 $this->_build_group_by(),
+                $this->_build_having(),
                 $this->_build_order_by(),
                 $this->_build_limit(),
                 $this->_build_offset(),
@@ -848,6 +852,27 @@
             }
             return "ORDER BY " . join(", ", $this->_order_by);
         }
+
+
+
+        /**
+         * Build HAVING
+         */
+        public function having($column_name, $operator, $value ){
+            array_push($this->_having, $column_name);
+            array_push($this->_having, $operator);
+            array_push($this->_having, $value);
+            return $this;
+        }
+
+
+        protected function _build_having() {
+            if (count($this->_having) === 0) {
+                return '';
+            }
+            return " HAVING " . $this->_having[0] . " " . $this->_having[1] . " " . $this->_having[2];
+        }
+
 
         /**
          * Build LIMIT

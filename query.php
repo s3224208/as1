@@ -29,7 +29,6 @@ $res = ORM::for_table('wine')
        ->join('region', array('region.region_id', '=', 'winery.region_id') )
        ->join('inventory', array('inventory.wine_id', '=', 'wine.wine_id'));
 
-
 if ( !empty( $wine ) ){
    $res = $res->where('wine_name', $wine);
 }
@@ -39,7 +38,9 @@ if ( !empty( $winery ) ){
 }
 
 if ( !empty( $region ) ){ 
-   $res = $res->where('region_name', $region);
+   if ( $region != "All" ){
+     $res = $res->where('region_name', $region);
+   }
 }
 
 if ( !empty( $grape ) ){ 
@@ -47,41 +48,72 @@ if ( !empty( $grape ) ){
 }
 
 if ( !empty( $from_y ) ){ 
-   $res = $res->where_lte('year', $from_y);
+   $res = $res->where_gte('year', $from_y);
 }
 
-/*
+
 if ( !empty( $to_y ) ){ 
-   $res = $res->where_gte('year', $to_y);
-}
-*/
-
-echo $from_y . "<br/>";
-echo $to_y;
-
-$res = $res->find_many();
-
-//for debug
-foreach( $res as $wine ){
-   echo $wine->wine_name . "<br/>"; 
-   echo $wine->variety . "<br/>";
-   echo $wine->year . "<br/>";
-   echo $wine->winery_name . "<br/>";
-   echo $wine->region_name . "<br/>";
-   echo "<br/><br/>";
+   $res = $res->where_lte('year', $to_y);
 }
 
 
-/*
-echo "wine " . $wine . "<br/>";
-echo "winery " . $winery . "<br/>";
-echo "region " . $region . "<br/>";
-echo "grape " . $grape . "<br/>";
-echo "years " . $years . "<br/>";
-echo "stock " . $stock . "<br/>";
-echo "order " . $order . "<br/>";
-echo "from " . $from . "<br/>";
-echo "to " . $to . "<br/>";
-*/
+if ( !empty( $stock ) ){
+   $res = $res->where_gte('on_hand', $stock );
+}
+
+
+if ( !empty( $from ) ){
+   $res = $res->where_gte('cost', $from );
+}
+
+
+if ( !empty( $to ) ){
+   $res = $res->where_lte('cost', $to );
+}
+
+
+if ( !empty( $order ) ){
+
+   $res = $res->join('items', array('items.wine_id', '=', 'wine.wine_id'))
+              ->group_by('items.wine_id')
+              ->having('SUM( qty )', '>', $order );
+
+}
+
+
+$res = $res->order_by_asc('year')
+           ->find_many();
 
 ?>
+
+<table>
+  <thead>
+    <tr>
+      <th>Wine Name</th>
+      <th>Grape varieties</th>
+      <th>Year</th>
+      <th>Winery</th>
+      <th>Region</th>
+      <th>Cost</th>
+    </tr>
+  </thead>
+
+  <tbody>
+<?
+
+foreach( $res as $wine ){
+?>
+ <tr>
+   <td><?php echo $wine->wine_name; ?></td>
+   <td><?php echo $wine->variety; ?></td>
+   <td><?php echo $wine->year; ?></td>
+   <td><?php echo $wine->winery_name; ?></td>
+   <td><?php echo $wine->region_name; ?></td>
+   <td><?php echo $wine->cost; ?></td>
+ </tr>
+
+<?php
+}
+?>
+  </tbody>
+</table>
