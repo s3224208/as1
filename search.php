@@ -9,9 +9,8 @@
 
   $wines =  Model::factory('wine')
 	    ->order_by_asc('year')
-            ->find_many();
-  
- 
+      ->find_many();
+
   $years = array();
   foreach($wines as $wine ){
      if ( !in_array( $wine->year, $years ) ) { 

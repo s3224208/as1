@@ -22,7 +22,6 @@ $from = isset($_GET['from'])?$_GET['from']:"";
 
 $to = isset($_GET['to'])?$_GET['to']:"";   
 
-
 $res = ORM::for_table('wine')
        ->join('winery', array('wine.winery_id', '=', 'winery.winery_id' ))
        ->join('grape_variety', array('grape_variety.variety_id', '=', 'grape_variety.variety_id') )
