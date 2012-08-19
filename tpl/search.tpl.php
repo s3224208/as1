@@ -3,7 +3,7 @@
 
   <body>
      
-	 <form action="query.php" method="GET" >
+	 <form action="test.php" method="GET" >
 	 
      Wine name:
      <input type="text" name="wine" id="wine" /><br/>
