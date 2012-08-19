@@ -75,13 +75,44 @@
          return $this;
      }
 
-     protected function _build_join(){
 
+     protected function _build_select_start(){
+        return "SELECT * FROM ? ";
      }
+
+     protected function _build_where(){
+        $f = "WHERE ";
+        
+        foreach( $_where as $w ){
+           $f .= "WHERE ? AND ? "; 
+        }
+        return $f;
+     }
+
+     protected function _build_join(){
+        $f = "";
+        foreach( $_join as $j ){
+           $f .= "INNER JOIN ? ON ?" . $j[1] . "? ";
+        }
+        return $f;
+     }
+
+     protected function _build_group_by(){
+        return "GROUP BY ? ";
+     }
+
+
+     protected function _build_order_by(){
+        return "ORDER BY ? ASC"; 
+     }
+
 
      protected function _build_select(){
-        return $query;
+        $query = $this->_build_select_start() . $this->_build_join() . $this->_build_where() .
+                 $this->_build_group_by() . $this->_build_order_by();
+        return array( $query, $place_holders);
      }
+
 
      public function find_many(){
         list($query, $place_holders) = _build_select();
@@ -89,6 +120,7 @@
         $sth->execute( $place_holders ); 
         return $sth->fetchAll();
      }
+
   }
 
 
