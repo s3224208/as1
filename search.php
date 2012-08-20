@@ -29,8 +29,13 @@
      }
   }
 
-
-  require_once("tpl/search.tpl.php");
+  require_once("smarty/Smarty.class.php");
+  $smarty = new Smarty();
+  $smarty->assign('regions', $regions);
+  $smarty->assign('grapes', $grapes);
+  $smarty->assign('years', $years);
+  $smarty->display("templates/search.tpl");
+  //require_once("tpl/search.tpl.php");
 ?>
 
 

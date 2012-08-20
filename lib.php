@@ -5,14 +5,15 @@
 
   ORM::configure('mysql:host=localhost;dbname=winestore');
   ORM::configure('username', 'root');
-  ORM::configure('password', 'root');
+  ORM::configure('password', 'RMIT2010');
 
-  DATASTORE::config('mysql:host=localhost;dbname=winestore', 'root', 'root');
+  DATASTORE::config('mysql:host=localhost;dbname=winestore', 'root', 'RMIT2010');
 
   class DATASTORE{
 
      protected static $_config = array();
      protected static $_pdo;
+     protected $_select = array();
      protected $_table;
      protected $_join = array();
      protected $_where = array();
@@ -41,6 +42,11 @@
 
      public function __construct($table_name){
          $this->_table = $table_name;
+     }
+
+     public function select($column){
+         array_push( $this->_select, $column );
+         return $this;
      }
 
      public function where($column, $value){
@@ -78,9 +84,32 @@
          return $this;
      }
 
+     public function find_many($debug=False){
+        $query = $this->_build_select();
+        if ($debug == True ){
+           print $query;
+           print "<pre>";
+           print_r( $this->_placeholder );
+           print "</pre>";
+        }
+        $sth = self::$_pdo->prepare( $query );
+        $sth->execute( $this->_placeholder ); 
+        return $sth->fetchAll();
+     }
+
      protected function _build_select_start(){
-        array_push( $this->_placeholder, $this->_table);
-        return 'SELECT * FROM ? ';
+        if ( empty( $this->_select) ){
+           return 'SELECT * FROM ' . $this->_table . " ";
+        }
+
+        $f = "SELECT ";
+        foreach( $this->_select as $select ){
+           $f .= $select . " ,"; 
+        }
+        $f = substr( $f, 0, -1 ) . "FROM " . $this->_table . " ";
+
+        return $f;
+
      }
 
      protected function _build_where(){
@@ -89,10 +118,10 @@
 
         $f = 'WHERE ';
         foreach( $this->_where as $w ){
-           array_push( $this->_placeholder, $w[0], $w[2]);
-           $f .= ' ? ' . $w[1] . ' ? ' . ' AND '; 
+           array_push( $this->_placeholder, $w[2]);
+           $f .= $w[0] . $w[1] . ' ? ' . ' AND '; 
         }
-        $f = substr($f, 0, -4);//cut off 'AND ' 
+        $f = substr($f, 0, -4) . " ";//cut off 'AND ' 
         return $f;
      }
 
@@ -102,8 +131,7 @@
 
         $f = '';
         foreach( $this->_join as $j ){ 
-           array_push( $this->_placeholder, $j[0], $j[1][0], $j[1][2]);
-           $f .= 'INNER JOIN ? ON ? ' . $j[1][1] . ' ? ';
+           $f .= 'INNER JOIN ' . $j[0] . ' ON ' . $j[1][0] . $j[1][1] . $j[1][2] . '  ';
         }
         return $f;
      }
@@ -111,11 +139,9 @@
      protected function _build_group_by(){
         if ( empty($this->_group_by) )
           return '';
-
         $f = ' GROUP BY ';
         foreach( $this->_group_by as $g ){
-           array_push( $this->_placeholder, $g );
-           $f .= $f . ' ?,';
+           $f .= $g . ' ?,';
         }
         $f = substr($f, 0, -2);
         return $f;
@@ -125,8 +151,7 @@
      protected function _build_order_by(){
         if ( empty($this->_asc) )
           return '';
-        array_push( $this->_placeholder, $this->_asc );
-        return ' ORDER BY ? ASC '; 
+        return ' ORDER BY ' . $this->_asc . ' ASC '; 
      }
 
 
@@ -142,23 +167,6 @@
         $query = $this->_build_select_start() . $this->_build_join() . $this->_build_where() .
                  $this->_build_group_by() . $this->_build_order_by() . $this->_build_having();
         return $query;
-     }
-
-
-     public function gen_sql(){
-        $query = $this->_build_select(); 
-        print $query;
-        print '<pre>';
-        print_r( $this->_placeholder );
-        print '</pre>';
-     }
-
-
-     public function find_many(){
-        $query = $this->_build_select();
-        $sth = self::$_pdo->prepare( $query );
-        $sth->execute( $this->_placeholder ); 
-        return $sth->fetchAll();
      }
 
   }

@@ -36,6 +36,7 @@ $res = DATASTORE::create_table('wine')
        ->select('region_name')
        ->select('cost')
        ->select('SUM(qty)')
+       ->select('SUM(price)')
        ->group_by('items.wine_id');
 
 if ( !empty( $wine ) ){
@@ -90,40 +91,15 @@ if ( !empty( $order ) ){
 //$res->order_by_asc('year')->gen_sql();
 
 
-$res = $res->order_by_asc('year')
-           ->find_many(true);
+$wines = $res->order_by_asc('year')
+           ->find_many();
 
+require_once("smarty/Smarty.class.php");
+$smarty = new Smarty();
+$smarty->assign('wines', $wines);
+$smarty->assign('sum_qty', "SUM(qty)");
+$smarty->assign('sum_price', "SUM(price)");
+$smarty->display("templates/query.tpl");
 
 ?>
 
-<table>
-  <thead>
-    <tr>
-      <th>Wine Name</th>
-      <th>Grape varieties</th>
-      <th>Year</th>
-      <th>Winery</th>
-      <th>Region</th>
-      <th>Cost</th>
-    </tr>
-  </thead>
-
-  <tbody>
-<?
-
-foreach( $res as $wine ){
-?>
- <tr>
-   <td><?php echo $wine['wine_name']; ?></td>
-   <td><?php echo $wine['variety']; ?></td>
-   <td><?php echo $wine['year']; ?></td>
-   <td><?php echo $wine['winery_name']; ?></td>
-   <td><?php echo $wine['region_name']; ?></td>
-   <td><?php echo $wine['cost']; ?></td>
- </tr>
-
-<?php
-}
-?>
-  </tbody>
-</table>
