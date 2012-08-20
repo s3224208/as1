@@ -5,9 +5,9 @@
 
   ORM::configure('mysql:host=localhost;dbname=winestore');
   ORM::configure('username', 'root');
-  ORM::configure('password', 'RMIT2010');
+  ORM::configure('password', 'root');
 
-  DATASTORE::config('mysql:host=localhost;dbname=winestore', 'root', 'RMIT2010');
+  DATASTORE::config('mysql:host=localhost;dbname=winestore', 'root', 'root');
 
   class DATASTORE{
 

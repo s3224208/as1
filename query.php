@@ -22,11 +22,22 @@ $from = isset($_GET['from'])?$_GET['from']:"";
 
 $to = isset($_GET['to'])?$_GET['to']:"";   
 
-$res = ORM::for_table('wine')
+$res = DATASTORE::create_table('wine')
        ->join('winery', array('wine.winery_id', '=', 'winery.winery_id' ))
-       ->join('grape_variety', array('grape_variety.variety_id', '=', 'grape_variety.variety_id') )
+       ->join('wine_variety', array('wine_variety.wine_id', '=', 'wine.wine_id' ))
+       ->join('grape_variety', array('wine_variety.variety_id', '=', 'grape_variety.variety_id') )
        ->join('region', array('region.region_id', '=', 'winery.region_id') )
-       ->join('inventory', array('inventory.wine_id', '=', 'wine.wine_id'));
+       ->join('items', array('items.wine_id', '=', 'wine.wine_id'))
+       ->join('inventory', array('inventory.wine_id', '=', 'wine.wine_id'))
+       ->select('wine_name')
+       ->select('variety')
+       ->select('year')
+       ->select('winery_name')
+       ->select('region_name')
+       ->select('cost')
+       ->select('SUM(qty)')
+       ->select('SUM(price)')
+       ->group_by('items.wine_id');
 
 if ( !empty( $wine ) ){
    $res = $res->where('wine_name', $wine);
@@ -73,46 +84,22 @@ if ( !empty( $to ) ){
 
 if ( !empty( $order ) ){
 
-   $res = $res->join('items', array('items.wine_id', '=', 'wine.wine_id'))
-              ->group_by('items.wine_id')
-              ->having('SUM( qty )', '>', $order );
+   $res = $res->having('SUM( qty )', '>', $order );
 
 }
 
+//$res->order_by_asc('year')->gen_sql();
 
-$res = $res->order_by_asc('year')
+
+$wines = $res->order_by_asc('year')
            ->find_many();
 
+require_once("smarty/Smarty.class.php");
+$smarty = new Smarty();
+$smarty->assign('wines', $wines);
+$smarty->assign('sum_qty', "SUM(qty)");
+$smarty->assign('sum_price', "SUM(price)");
+$smarty->display("templates/query.tpl");
+
 ?>
 
-<table>
-  <thead>
-    <tr>
-      <th>Wine Name</th>
-      <th>Grape varieties</th>
-      <th>Year</th>
-      <th>Winery</th>
-      <th>Region</th>
-      <th>Cost</th>
-    </tr>
-  </thead>
-
-  <tbody>
-<?
-
-foreach( $res as $wine ){
-?>
- <tr>
-   <td><?php echo $wine->wine_name; ?></td>
-   <td><?php echo $wine->variety; ?></td>
-   <td><?php echo $wine->year; ?></td>
-   <td><?php echo $wine->winery_name; ?></td>
-   <td><?php echo $wine->region_name; ?></td>
-   <td><?php echo $wine->cost; ?></td>
- </tr>
-
-<?php
-}
-?>
-  </tbody>
-</table>

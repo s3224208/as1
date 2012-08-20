@@ -2,7 +2,7 @@
 
 {block 'main'}
 
-	 <form action="new_query.php" method="GET" >
+	 <form action="query.php" method="GET" >
 	 
      Wine name:
      <input type="text" name="wine" id="wine" /><br/>
