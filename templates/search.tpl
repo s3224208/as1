@@ -2,6 +2,11 @@
 
 {block 'main'}
 
+   {if isset($err_msg)}   
+     <div class="alert alert-error">
+        {$err_msg}
+     </div>
+   {/if}
 	 <form action="query.php" method="GET" >
 	 
      Wine name:
@@ -13,14 +18,14 @@
      Region:
      <select name="region" id="region" >
           {foreach $regions as $region}
-             <option value='{$region->region_name}'>{$region->region_name}</option>";
+             <option value='{$region.region_name}'>{$region.region_name}</option>";
           {/foreach}
      </select><br/>
 
      Grape type:
      <select name="grape" id="grape" >
           {foreach $grapes as $grape}
-             <option value='{$grape->variety}'>{$grape->variety}</option>";
+             <option value='{$grape.variety}'>{$grape.variety}</option>";
           {/foreach}
      </select><br/>
 

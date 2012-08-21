@@ -1,4 +1,13 @@
 <?php
+session_start();
+/*
+ * set flash msg and redirect to url
+ */
+function flash_redirect($msg, $url){
+  $_SESSION['err_msg'] = $msg; 
+  header('Location: ' . $url);
+  exit;
+}
 
 require_once 'lib.php';
 
@@ -21,6 +30,35 @@ $order = isset($_GET['order'])?$_GET['order']:"";
 $from = isset($_GET['from'])?$_GET['from']:"";   
 
 $to = isset($_GET['to'])?$_GET['to']:"";   
+
+/* validation */
+
+/* check range of years */
+if ( $from_y != "" && $to_y != "" && $from_y > $to_y ){
+  flash_redirect("Range of years are invalid", "search.php");
+}
+
+/* check range of cost range */
+if ( $from != "" && $to != "" && $from > $to ){
+  flash_redirect("Dollar cost range are invalid", "search.php");
+}
+
+if ( $from != "" && $to != "" && ($from < 0 ||  $to < 0) ){
+  flash_redirect("Dollar cost range are invalid", "search.php");
+}
+
+/* check minimun stock number */
+if ( $stock != "" && $stock <= 0 ){
+  flash_redirect("Minimun number of wines in stock is invalid", "search.php");
+}
+
+/* check minimun wines ordered number */
+if ( $order != "" && $order <= 0 ){
+  flash_redirect("Minimun number of wines ordered is invalid", "search.php");
+}
+
+
+/* end of validation */
 
 $res = DATASTORE::create_table('wine')
        ->join('winery', array('wine.winery_id', '=', 'winery.winery_id' ))

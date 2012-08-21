@@ -1,39 +1,30 @@
 <?php
+  session_start();
+
   require "lib.php";
-  
-  $regions = Model::factory('Region')
-	    ->find_many(); 
 
-  $grapes = Model::factory('Grape')
-	    ->find_many(); 
+  $regions = DATASTORE::create_table('region')->find_many();
 
-  $wines =  Model::factory('wine')
-	    ->order_by_asc('year')
-      ->find_many();
+  $grapes = DATASTORE::create_table('grape_variety')->find_many();
+
+  $wines = DATASTORE::create_table('wine')->order_by_asc('year')->find_many();
 
   $years = array();
   foreach($wines as $wine ){
-     if ( !in_array( $wine->year, $years ) ) { 
-       array_push( $years, $wine->year ); 
+     if ( !in_array( $wine['year'], $years ) ) { 
+       array_push( $years, $wine['year'] ); 
      }
   }
-
-  $costs = array();  
-  $inventory = Model::factory('inventory')
-	       ->order_by_asc('cost')
-	       ->find_many();
-
-  foreach( $inventory as $item ){
-     if ( !in_array( $item->cost, $costs ) ) { 
-       array_push( $costs, $item->cost ); 
-     }
-  }
-
+  
   require_once("smarty/Smarty.class.php");
   $smarty = new Smarty();
   $smarty->assign('regions', $regions);
   $smarty->assign('grapes', $grapes);
   $smarty->assign('years', $years);
+  if ( !empty($_SESSION['err_msg']) ){ //if there is error msg 
+     $smarty->assign('err_msg', $_SESSION['err_msg']);
+     unset($_SESSION['err_msg']); // unset flash msg
+  }
   $smarty->display("templates/search.tpl");
   //require_once("tpl/search.tpl.php");
 ?>
