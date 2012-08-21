@@ -126,8 +126,6 @@ if ( !empty( $order ) ){
 
 }
 
-//$res->order_by_asc('year')->gen_sql();
-
 
 $wines = $res->order_by_asc('year')
            ->find_many();
