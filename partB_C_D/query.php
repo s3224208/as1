@@ -73,6 +73,7 @@ $res = DATASTORE::create_table('wine')
        ->select('winery_name')
        ->select('region_name')
        ->select('cost')
+       ->select('on_hand')
        ->select('SUM(qty)')
        ->select('SUM(price)')
        ->group_by('items.wine_id');

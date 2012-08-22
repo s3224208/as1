@@ -12,7 +12,8 @@
       <th>Winery</th>
       <th>Region</th>
       <th>Cost</th>
-      <th>Qty</th>
+      <th>Total number of bottles available</th>
+      <th>Total Stock sold</th>
       <th>Sales Revenue</th>
     </tr>
   </thead>
@@ -27,8 +28,9 @@
    <td>{$wine.winery_name}</td>
    <td>{$wine.region_name}</td>
    <td>{$wine.cost}</td>
+   <td>{$wine.on_hand}</td>
    <td>{$wine.$sum_qty}</td>
-   <td>{$wine.$sum_price-$wine.$sum_qty*$wine.cost}</td>
+   <td>{$wine.$sum_price}</td>
  </tr>
 {/foreach}
 
