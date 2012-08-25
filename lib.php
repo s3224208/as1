@@ -1,11 +1,13 @@
 <?php
 
   DATASTORE::config('mysql:host=localhost;dbname=winestore', 'root', 'root');
+  DATASTORE::config_li('localhost', 'root', 'root','winestore');
 
   class DATASTORE{
 
      protected static $_config = array();
      protected static $_pdo;
+     protected static $_mysqli;
      protected $_select = array();
      protected $_table;
      protected $_join = array();
@@ -25,11 +27,26 @@
             self::$_config['password'] = $password;
      }
 
+     public static function config_li($host="localhost", $username='root',
+                                      $password=null, $dbname="mysql", $port=3306){
+         self::$_config['host'] = $host;
+         self::$_config['username'] = $username;
+         self::$_config['dbname'] = $dbname;
+         self::$_config['port'] = $port;
+         if( !is_null($password) )
+            self::$_config['password'] = $password;
+     }
+
      /** 
       * Create a new DATASTORE obj; Factory pattern
       */
      public static function create_table($table_name){
-         self::$_pdo = new PDO( self::$_config['connect_string'], self::$_config['username'], self::$_config['password']);
+         self::$_pdo = new PDO( self::$_config['connect_string'], self::$_config['username'],self::$_config['password']);
+         return new self($table_name);
+     }
+
+     public static function create_table_mysqli($table_name){
+         self::$_mysqli = new mysqli( self::$_config['host'], self::$_config['username'], self::$_config['password'],self::$_config['dbname'], self::$_config['port'] );
          return new self($table_name);
      }
 
@@ -75,6 +92,42 @@
      public function order_by_asc($column){ 
          $this->_asc = $column;
          return $this;
+     }
+
+     public function find_many_mysqli($debug=False){
+        $query = $this->_build_select();
+        if ($debug == True ){
+           print $query;
+           print "<pre>";
+           print_r( $this->_placeholder );
+           print "</pre>";
+        }
+        $stmt = self::$_mysqli->prepare( $query );
+        $types = "";
+        foreach( $this->_placeholder as $holder ){
+           if ( gettype($holder) == "integer" ){
+              $types .= "i";
+           }
+           elseif ( gettype($holder) == "string" ){
+              $types .= "s";
+           }
+           elseif( gettype($holder) == "double" ){ 
+              $types .= "d";
+           }
+        }
+
+        $param = array(); 
+        array_push( $param, $types );
+        $i = 1;
+        foreach( $this->_placeholder as $holder ){
+            $param[$i++] = &$holder;
+        }
+        call_user_func_array(array($stmt, "bind_param"), $param);
+        $stmt->execute();
+
+        $result = mysqli_stmt_get_result($stmt);
+        return $result->fetch_all();
+
      }
 
      public function find_many($debug=False){
