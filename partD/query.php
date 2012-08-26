@@ -60,8 +60,7 @@ if ( $order != "" && $order <= 0 ){
 
 /* end of validation */
 
-//$res = DATASTORE::create_table('wine')
-$res = DATASTORE::create_table_mysqli('wine')
+$res = DATASTORE::create_table('wine')
        ->join('winery', array('wine.winery_id', '=', 'winery.winery_id' ))
        ->join('wine_variety', array('wine_variety.wine_id', '=', 'wine.wine_id' ))
        ->join('grape_variety', array('wine_variety.variety_id', '=', 'grape_variety.variety_id') )
@@ -128,13 +127,10 @@ if ( !empty( $order ) ){
 
 }
 
-/*
 $wines = $res->order_by_asc('year')
            ->find_many();
- */
 
-$wines = $res->order_by_asc('year')
-           ->find_many_mysqli(true);
+
 
 require_once("smarty/Smarty.class.php");
 $smarty = new Smarty();

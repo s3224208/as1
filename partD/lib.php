@@ -102,32 +102,18 @@
            print_r( $this->_placeholder );
            print "</pre>";
         }
-        $stmt = self::$_mysqli->prepare( $query );
-        $types = "";
         foreach( $this->_placeholder as $holder ){
-           if ( gettype($holder) == "integer" ){
-              $types .= "i";
-           }
-           elseif ( gettype($holder) == "string" ){
-              $types .= "s";
-           }
-           elseif( gettype($holder) == "double" ){ 
-              $types .= "d";
-           }
-        }
+           if( gettype($holder) == "string" )
+               $holder = '"' . $holder . '"';
+           $query = preg_replace('/\?/', $holder, $query, 1);
+        } 
+        print $query . "<br/>";
 
-        $param = array(); 
-        array_push( $param, $types );
-        $i = 1;
-        foreach( $this->_placeholder as $holder ){
-            $param[$i++] = &$holder;
+        $result = self::$_mysqli->query($query);
+        if( !$result ){
+          print "error" . self::$_mysqli->error;
         }
-        call_user_func_array(array($stmt, "bind_param"), $param);
-        $stmt->execute();
-
-        $result = mysqli_stmt_get_result($stmt);
         return $result->fetch_all();
-
      }
 
      public function find_many($debug=False){
