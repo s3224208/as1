@@ -2,14 +2,16 @@
 
 {block 'main'}
    
-   <a href="search.php?session=1">Start Session</a>
-   <br/><br/>
 
    {if isset($session) }
      <div class="alert alert-success">
         session is started
      </div>
+   {else}
+     <a href="search.php?session=1">Start Session</a>
+     <br/><br/>
    {/if}
+   
 
    {if isset($err_msg)}
      <div class="alert alert-error">

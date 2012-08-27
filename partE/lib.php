@@ -1,7 +1,7 @@
 <?php
 
-  DATASTORE::config('mysql:host=localhost;dbname=winestore', 'root', 'root');
-  DATASTORE::config_li('localhost', 'root', 'root','winestore');
+  DATASTORE::config('mysql:host=localhost;dbname=winestore', 'root', 'RMIT2010');
+  DATASTORE::config_li('localhost', 'root', 'RMIT2010','winestore');
 
   class DATASTORE{
 

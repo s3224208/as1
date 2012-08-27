@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.1.11, created on 2012-08-26 15:25:20
+<?php /* Smarty version Smarty-3.1.11, created on 2012-08-27 18:30:31
          compiled from "templates/search.tpl" */ ?>
 <?php /*%%SmartyHeaderCode:133842776503a17c481cc40-43901329%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
@@ -7,13 +7,13 @@ $_valid = $_smarty_tpl->decodeProperties(array (
     'd882aa11801c5fcab6b6eddcbf25003b28e12815' => 
     array (
       0 => 'templates/search.tpl',
-      1 => 1345987492,
+      1 => 1346051232,
       2 => 'file',
     ),
     'd727a2f7c0bda098bc7da6c28169b69f69e5ee74' => 
     array (
       0 => './templates/base.tpl',
-      1 => 1345986746,
+      1 => 1346052291,
       2 => 'file',
     ),
   ),
@@ -35,20 +35,23 @@ $_valid = $_smarty_tpl->decodeProperties(array (
             padding-top: 20px;
           }
       </style>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
    </head>
 
    <body>
       <div class="container main">
         
    
-   <a href="search.php?session=1">Start Session</a>
-   <br/><br/>
 
    <?php if (isset($_smarty_tpl->tpl_vars['session']->value)){?>
      <div class="alert alert-success">
         session is started
      </div>
+   <?php }else{ ?>
+     <a href="search.php?session=1">Start Session</a>
+     <br/><br/>
    <?php }?>
+   
 
    <?php if (isset($_smarty_tpl->tpl_vars['err_msg']->value)){?>
      <div class="alert alert-error">

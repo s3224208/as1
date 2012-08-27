@@ -131,15 +131,32 @@ if ( !empty( $order ) ){
 $wines = $res->order_by_asc('year')
            ->find_many();
 
+//generate data to share to Twitter
+$text = "";
+foreach( $wines as $wine ){
+   $text .= $wine['wine_name'] . " ";
+   if ( strlen($text) > 100 ){
+      $text = substr( $text, 0, 99 );
+      break;
+   }
+}
+
 
 require_once("smarty/Smarty.class.php");
 $smarty = new Smarty();
 $smarty->assign('wines', $wines);
 $smarty->assign('sum_qty', "SUM(qty)");
 $smarty->assign('sum_price', "SUM(price)");
+$smarty->assign('share', $text);
 if( !empty($_SESSION['session']) ){
     $smarty->assign('session', 1);
+    $i = count($_SESSION['result']);
+    foreach( $wines as $wine ){
+       $_SESSION['result'][$i++] = $wine;
+    }
+    //print count( $_SESSION['result'] );
 }
+
 $smarty->display("templates/query.tpl");
 
 ?>

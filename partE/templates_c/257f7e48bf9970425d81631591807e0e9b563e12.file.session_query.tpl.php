@@ -1,46 +1,32 @@
-<?php /* Smarty version Smarty-3.1.11, created on 2012-08-26 15:00:55
-         compiled from "templates/query.tpl" */ ?>
-<?php /*%%SmartyHeaderCode:36731342503a1e07b28e91-15066207%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
+<?php /* Smarty version Smarty-3.1.11, created on 2012-08-27 18:30:39
+         compiled from "templates/session_query.tpl" */ ?>
+<?php /*%%SmartyHeaderCode:531414427503b19d9bdec29-97786361%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_valid = $_smarty_tpl->decodeProperties(array (
   'file_dependency' => 
   array (
-    '3c78d8581333bb3036ddc203ac7d09c1fa4f4a6f' => 
+    '257f7e48bf9970425d81631591807e0e9b563e12' => 
     array (
-      0 => 'templates/query.tpl',
-      1 => 1345983945,
-      2 => 'file',
-    ),
-    'd727a2f7c0bda098bc7da6c28169b69f69e5ee74' => 
-    array (
-      0 => './templates/base.tpl',
-      1 => 1345983945,
+      0 => 'templates/session_query.tpl',
+      1 => 1346052247,
       2 => 'file',
     ),
   ),
-  'nocache_hash' => '36731342503a1e07b28e91-15066207',
+  'nocache_hash' => '531414427503b19d9bdec29-97786361',
   'function' => 
   array (
   ),
-  'has_nocache_code' => false,
   'version' => 'Smarty-3.1.11',
-  'unifunc' => 'content_503a1e07bb57d4_57696106',
+  'unifunc' => 'content_503b19d9c6f6d2_61826592',
+  'variables' => 
+  array (
+    'wines' => 0,
+    'wine' => 0,
+    'sum_qty' => 0,
+    'sum_price' => 0,
+  ),
+  'has_nocache_code' => false,
 ),false); /*/%%SmartyHeaderCode%%*/?>
-<?php if ($_valid && !is_callable('content_503a1e07bb57d4_57696106')) {function content_503a1e07bb57d4_57696106($_smarty_tpl) {?><!DOCTYPE html>
-
-<html>
-   <head> 
-      <link href="static/css/bootstrap.min.css" rel="stylesheet">
-      <style type="text/css">
-          .main{
-            padding-top: 20px;
-          }
-      </style>
-   </head>
-
-   <body>
-      <div class="container main">
-        
-
+<?php if ($_valid && !is_callable('content_503b19d9c6f6d2_61826592')) {function content_503b19d9c6f6d2_61826592($_smarty_tpl) {?>
 <?php if ($_smarty_tpl->tpl_vars['wines']->value){?>
 
 <table class="table table-striped table-condensed">
@@ -93,15 +79,9 @@ $_smarty_tpl->tpl_vars['wine']->_loop = true;
 <?php }else{ ?>
 
 <div class="alert alert-block">
-No records match your search criteria
+No records.
 </div>
 
 <?php }?>
 
-
-      </div>
-   </body>
-
-
-</html>
 <?php }} ?>

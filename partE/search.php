@@ -5,6 +5,7 @@
 
   if( !empty($_GET['session']) ){
       $_SESSION['session'] = 1;
+      $_SESSION['result'] = array();
   }
 
   $regions = DATASTORE::create_table('region')->find_many();
@@ -30,6 +31,7 @@
      unset($_SESSION['err_msg']); // unset flash msg
   }
   if ( !empty($_SESSION['session']) ){
+     //print count($_SESSION['result']);
      $smarty->assign('session', 1);
   }
   $smarty->display("templates/search.tpl");
