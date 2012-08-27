@@ -1,7 +1,7 @@
 <?php
 
-  DATASTORE::config('mysql:host=localhost;dbname=winestore', 'root', 'root');
-  DATASTORE::config_li('localhost', 'root', 'root','winestore');
+  DATASTORE::config('mysql:host=yallara.cs.rmit.edu.au:57090;dbname=winestore', 'root', 'root');
+  DATASTORE::config_li('yallara.cs.rmit.edu.au', 'root', 'root','winestore');
 
   class DATASTORE{
 
@@ -28,7 +28,7 @@
      }
 
      public static function config_li($host="localhost", $username='root',
-                                      $password=null, $dbname="mysql", $port=3306){
+                                      $password=null, $dbname="mysql", $port=57090){
          self::$_config['host'] = $host;
          self::$_config['username'] = $username;
          self::$_config['dbname'] = $dbname;
